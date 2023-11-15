@@ -1,0 +1,19 @@
+.container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+}
+
+.input{
+    background-color: beige;
+    color: gray;
+    margin: 10px;
+    
+}
+
+.button{
+    background-color: purple;
+    color:white;
+    margin: 10px;
+}
