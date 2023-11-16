@@ -1,5 +1,5 @@
 .container {
-    border: black solid 1px;
+    border: gray solid 2px;
     width: 70vh;
     margin: 10px;
     padding: 30px;
@@ -22,4 +22,7 @@
     border-bottom: gray solid 2px;
     font-size: 24px;
     font-weight: bold;
+}
+.playlistTitle:focus {
+  outline: none;
 }
