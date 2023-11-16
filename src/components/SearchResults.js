@@ -1,33 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 import TrackList from './Tracklist';
+import style from '../styles/SearchResults.module.css'
 
-const temResults = [
-    {
-        song: 'Song 1',
-        artist: 'Artist 1',
-        album: 'The Album 1',
-    },
-    {
-        song: 'Song 2',
-        artist: 'Artist 2',
-        album: 'The Album 2',
-    },
-    {
-        song: 'Song 3',
-        artist: 'Artist 3',
-        album: 'The Album 3',
-    },
-    {
-        song: 'Song 4',
-        artist: 'Artist 4',
-        album: 'The Album 4',
-    },
-];
-function SearchResults () {
+
+function SearchResults (props) {
+    
     return(
-        <div>
+        <div className={style.container} >
             <h2>Results</h2>
-            <TrackList songs={temResults} />
+            <TrackList songs={props.results} trackClickHandler={props.trackClick} />
         </div>
     )
 }

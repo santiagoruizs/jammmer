@@ -1,19 +1,28 @@
 .container{
     display: flex;
+    height: 50vh;
     align-items: center;
     justify-content: center;
-    height: 100px;
+    overflow:auto;
+    flex-direction: column;     
 }
 
 .input{
-    background-color: beige;
-    color: gray;
+    padding: 10px;
+    border: solid 1px black;
+    border-radius: 10px;
+    outline: none;
     margin: 10px;
+    width: 300px;
     
 }
 
 .button{
-    background-color: purple;
-    color:white;
+    padding: 10px;
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    cursor: pointer;
     margin: 10px;
 }

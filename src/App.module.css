@@ -1,3 +1,11 @@
+.container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow:auto;
+  flex-direction: column;     
+}
+
 .banner{
     background-color: black;
     height: 70px;
@@ -7,4 +15,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .playistContainer{
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 100px;
   }
