@@ -4,6 +4,8 @@ import React, {useState} from 'react'
 import SearchBar from './components/SearchBar';
 import SearchResults from './components/SearchResults';
 import PlayList from './components/Playlist';
+import url from './api/generateAuth'
+import getToken from './api/getToken';
 
 const temResults = [
   {
@@ -31,29 +33,60 @@ const temResults = [
       album: 'The Album 4',
   },
 ];
+let {access_token, expires_in} = getToken();
+console.log(access_token);
+console.log(expires_in);
 
-function App() {
+function App() {  
   const [results, setResults] = useState([]);
   const [playlist, setPlaylist] = useState([]);
+  const [playlistTitle, setPlaylistTitle] = useState('')
+
   const trackClickHandler = (track) => {
     if (!playlist.find(obj => obj.id == track.id)){
-      setPlaylist(prev => [track, ...prev])
+      setPlaylist(prev =>  [track, ...prev])
      }
   }
   const deleteTrackHandler = (track) => {
-    setPlaylist(playlist.filter(pl => pl.song !== track.song))
-     
+    setPlaylist(prev => prev.filter(pl => pl.song !== track.song))
   }
   const loadSearch = () => {
     setResults(temResults)
   }
+
+  const handlePlaylistTitle = (event) => {
+    setPlaylistTitle(event.target.value)
+  }
+  const handleSavePlaytlist = () => {
+    console.log(playlist)
+    alert(`${playlistTitle} is saved successfully!!`)
+    setPlaylistTitle('')
+    setPlaylist([]) 
+  }
+
+  const handleSearch = async () => {
+    let endpoint = 'https://api.spotify.com/v1/search?q='+encodeURIComponent('track:Gasolina')+'&type=track';
+    const searchResult = await fetch(endpoint,{
+        method: "GET",
+        headers: {
+          'Accept': 'application/json',
+          "Content-Type": "application/json",
+          Authorization: 'Bearer '+access_token, 
+        }
+      })
+    searchResult.json().then(
+      (data) => { console.log(data) }
+  );
+  }
   return (
     <div className={style.container}>
-      <h1 className={style.banner} >Jammmer</h1>
-      <SearchBar searchHandler = {loadSearch}/>
+      <h1 className={style.banner} >Jam<p className ={style.bannerLetter}>m</p>mer</h1>
+      <a href={url}><img src="https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/Spotify_Logo_CMYK_Black.png" alt='spotify' /></a>
+      <SearchBar searchHandler = {loadSearch} handleSearch={handleSearch}/>
+     
       <div className={style.playistContainer} >
         <SearchResults results={results} trackClick = {trackClickHandler}/>
-        <PlayList playlist ={playlist} trackClick={deleteTrackHandler}/> 
+        <PlayList playlist ={playlist} trackClick={deleteTrackHandler} handleTitle={handlePlaylistTitle} handleSave={handleSavePlaytlist} title={playlistTitle}/> 
       </div>
       <footer>App developed by Santiago Ruiz on a Codecademy challenge</footer>
     </div>

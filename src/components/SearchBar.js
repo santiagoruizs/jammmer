@@ -5,7 +5,7 @@ function SearchBar (props) {
     return(
         <div className={style.container}>
                 <input type="text" name="searchInput" className={style.input} />
-                <button type="submit" className={style.button} onClick={props.searchHandler}>SEARCH</button>
+                <button type="submit" className={style.button} onClick={props.handleSearch}>SEARCH</button>
         </div>
     )
 }
