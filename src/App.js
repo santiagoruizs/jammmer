@@ -33,11 +33,13 @@ const temResults = [
       album: 'The Album 4',
   },
 ];
+
 let {access_token, expires_in} = getToken();
 console.log(access_token);
 console.log(expires_in);
 
 function App() {  
+  const [searchText, setSearchText] = useState('');
   const [results, setResults] = useState([]);
   const [playlist, setPlaylist] = useState([]);
   const [playlistTitle, setPlaylistTitle] = useState('')
@@ -58,31 +60,41 @@ function App() {
     setPlaylistTitle(event.target.value)
   }
   const handleSavePlaytlist = () => {
-    console.log(playlist)
+    const URIS = playlist.map(track => track.uri)
+    console.log(URIS)
     alert(`${playlistTitle} is saved successfully!!`)
     setPlaylistTitle('')
     setPlaylist([]) 
   }
 
   const handleSearch = async () => {
-    let endpoint = 'https://api.spotify.com/v1/search?q='+encodeURIComponent('track:Gasolina')+'&type=track';
-    const searchResult = await fetch(endpoint,{
-        method: "GET",
-        headers: {
-          'Accept': 'application/json',
-          "Content-Type": "application/json",
-          Authorization: 'Bearer '+access_token, 
-        }
-      })
-    searchResult.json().then(
-      (data) => { console.log(data) }
-  );
+    setResults([])
+    if (searchText){
+      let endpoint = 'https://api.spotify.com/v1/search?q='+encodeURIComponent(`track:${searchText}`)+'&type=track&limit=5';
+      const searchResult = await fetch(endpoint,{
+          method: "GET",
+          headers: {
+            'Accept': 'application/json',
+            "Content-Type": "application/json",
+            Authorization: 'Bearer '+access_token, 
+          }
+        })
+      searchResult.json().then(
+        (data) => {
+          console.log(data)
+          data.tracks.items.forEach((track, i) => {
+          let trackData = {id: track.id, song:track.name, album:track.album.name, artist: track.artists[0].name, uri:track.uri}
+          console.log(`Name: ${track.name}, Album: ${track.album.name}, Artist: ${track.artists[0].name}, URI: ${track.uri}`)
+          setResults(prev => [...prev, trackData])
+        })}
+      )
+    }
   }
   return (
     <div className={style.container}>
       <h1 className={style.banner} >Jam<p className ={style.bannerLetter}>m</p>mer</h1>
       <a href={url}><img src="https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/Spotify_Logo_CMYK_Black.png" alt='spotify' /></a>
-      <SearchBar searchHandler = {loadSearch} handleSearch={handleSearch}/>
+      <SearchBar searchHandler = {loadSearch} handleSearch={handleSearch} searchText={searchText} handleTextSearch={(event) => {setSearchText(event.target.value)}}/>
      
       <div className={style.playistContainer} >
         <SearchResults results={results} trackClick = {trackClickHandler}/>

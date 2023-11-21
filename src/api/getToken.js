@@ -6,6 +6,7 @@ function getToken() {
     while ( e = r.exec(q)) {
        hashParams[e[1]] = decodeURIComponent(e[2]);
     }
+    window.history.pushState({}, document.title, "/");
     return hashParams;
   
 }

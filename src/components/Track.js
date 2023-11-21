@@ -1,9 +1,9 @@
 import React from 'react'
 import style from '../styles/Track.module.css'
 
-function Track ({song, artist, album, id, handleClick}) {
+function Track ({song, artist, album, id, handleClick, uri}) {
     const handleTrackClick = () =>{
-        handleClick({song, artist, album, id})
+        handleClick({id, song, artist, album, uri})
     }
     return(
         <div className ={style.container} onClick={handleTrackClick}>
