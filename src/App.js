@@ -34,7 +34,23 @@ const temResults = [
   },
 ];
 
+
+
 let {access_token, expires_in} = getToken();
+
+const getUid = fetch('https://api.spotify.com/v1/me',{//A OTRA CARPETA
+  method: "GET",
+  headers: {
+    'Accept': 'application/json',
+    "Content-Type": "application/json",
+    Authorization: 'Bearer '+access_token, 
+  }
+})
+.then(response => response.json())
+.then(user => {
+  return user.id
+})
+
 console.log(access_token);
 console.log(expires_in);
 
@@ -59,13 +75,70 @@ function App() {
   const handlePlaylistTitle = (event) => {
     setPlaylistTitle(event.target.value)
   }
-  const handleSavePlaytlist = () => {
+  const handleSavePlaytlist = async () => {
     const URIS = playlist.map(track => track.uri)
     console.log(URIS)
     alert(`${playlistTitle} is saved successfully!!`)
     setPlaylistTitle('')
-    setPlaylist([]) 
-  }
+    setPlaylist([])
+    const uid = await getUid
+
+    const apiUrl = `https://api.spotify.com/v1/users/${uid}/playlists`;
+    const headers = new Headers({
+      'Authorization': 'Bearer '+access_token,
+      'Content-Type': 'application/json',
+    });
+
+    const body = JSON.stringify({
+      name: playlistTitle,
+      description: 'Playlist Created With Jammmer',
+      public: false,
+    });
+
+    const playListId = await fetch(apiUrl, {
+      method: 'POST',
+      headers: headers,
+      body: body,
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Network response was not ok, status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        return data.id;
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+      
+      const playlistTracksUrl = `https://api.spotify.com/v1/playlists/${playListId}/tracks`;
+
+      const plBody = JSON.stringify({
+        uris: URIS,
+        position: 0
+      });
+
+      const playListTracks = await fetch(playlistTracksUrl, {
+        method: 'POST',
+        headers: headers,
+        body: plBody,
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`Network response was not ok, status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+         console.log('Success: ', data);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+
+    }
 
   const handleSearch = async () => {
     setResults([])
@@ -97,8 +170,8 @@ function App() {
       <SearchBar searchHandler = {loadSearch} handleSearch={handleSearch} searchText={searchText} handleTextSearch={(event) => {setSearchText(event.target.value)}}/>
      
       <div className={style.playistContainer} >
-        <SearchResults results={results} trackClick = {trackClickHandler}/>
-        <PlayList playlist ={playlist} trackClick={deleteTrackHandler} handleTitle={handlePlaylistTitle} handleSave={handleSavePlaytlist} title={playlistTitle}/> 
+         {results[0] && <SearchResults results={results} trackClick = {trackClickHandler}/>}
+         {true && <PlayList playlist ={playlist} trackClick={deleteTrackHandler} handleTitle={handlePlaylistTitle} handleSave={handleSavePlaytlist} title={playlistTitle}/> }
       </div>
       <footer>App developed by Santiago Ruiz on a Codecademy challenge</footer>
     </div>
